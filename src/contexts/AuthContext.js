@@ -14,22 +14,21 @@ export const AuthProvider = ({ children }) => {
         try {
           const decoded = jwtDecode(token);
           const userId = await AuthService.getCurrentUser();
-          //console.log("decoded", decoded);
-          //console.log("userId", userId);
+
           setUser({
             id: userId,
             role: decoded.role,
-            phoneNumber: decoded.id,
+            email: decoded.email,
           });
         } catch (error) {
-          console.error("Помилка декодування токена", error);
+          console.error("Token decoding exeption:", error);
           localStorage.removeItem("token");
           setUser(null);
         }
       }
     };
 
-    fetchUser(); // Викликаємо асинхронну функцію
+    fetchUser(); 
   }, []);
 
   const login = async (token) => {
@@ -40,10 +39,8 @@ export const AuthProvider = ({ children }) => {
     console.log("decodedLogin", decoded);
     console.log("userIdLogin", userId);
 
-    setUser({ id: userId, role: decoded.role, phoneNumber: decoded.id });
-    if (decoded.role === "user") localStorage.setItem("id", userId);
-
-    //console.log("userLogin", user);
+    setUser({ id: userId, role: decoded.role, email: decoded.email });
+    if (decoded.role === "client") localStorage.setItem("id", userId);
   };
 
   const logout = () => {
@@ -53,7 +50,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const getUser = () => {
-    console.log("USERssss", user);
+    console.log("USERS", user);
     return user;
   };
 

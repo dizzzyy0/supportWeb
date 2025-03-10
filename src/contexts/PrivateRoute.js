@@ -9,10 +9,6 @@ const PrivateRoute = ({ children, role }) => {
     return <Navigate to="/login" />;
   }
 
-  if (id) {
-    return <Navigate to={`/info/${id}`} />;
-  }
-
   return children;
 };
 
