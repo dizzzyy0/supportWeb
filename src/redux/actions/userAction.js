@@ -24,6 +24,7 @@ export const getUserByIdAction = (userId) => async (dispatch) => {
     try {
         const data = await fetchUserById(userId);
         dispatch({ type: GET_USER_BY_ID, payload: data });
+        return data;
     } catch (error) {
         dispatch({ type: USER_ERROR, payload: error.message });
     }

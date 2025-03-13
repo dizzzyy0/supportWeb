@@ -1,14 +1,14 @@
 import axios from 'axios';
 
-const API_URL = `${process.env.API_URL}/auth`;
+const API_URL = `${process.env.REACT_APP_API_URL}/auth`;
 
 export const AuthService = {
     register: async (userData) => {
         try {
             const response = await axios.post(`${API_URL}/register`, userData);
 
-            if (response.data.token) {
-                localStorage.setItem("token", response.data.token);
+            if (response.data.access_token) {
+                localStorage.setItem("token", response.data.access_token);
             }
             
             return response.data;
@@ -21,12 +21,13 @@ export const AuthService = {
         try {
             const response = await axios.post(`${API_URL}/login`, credentials);
 
-            if (response.data.token) {
-                localStorage.setItem("token", response.data.token);
+            if (response.data.access_token) {
+                localStorage.setItem("token", response.data.access_token);
             }
 
             return response.data;
         } catch (error) {
+            console.log(API_URL);
             throw error.response?.data || { message: "Something went wrong" };
         }
     },
@@ -56,6 +57,7 @@ export const AuthService = {
     
             return response.data;
         } catch (error) {
+            console.log('API_URL');
             throw error.response?.data || { message: "Something went wrong" };
         }
     },
