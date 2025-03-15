@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { AuthService } from "../../services/authService";
@@ -6,15 +6,20 @@ import { AuthService } from "../../services/authService";
 function Navigation() {
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const token = localStorage.getItem("token");
   const id = localStorage.getItem("id");
-  const role = localStorage.getItem("role"); // Додаємо отримання ролі користувача
+  const role = localStorage.getItem("role");
 
   const handleLogout = () => {
     AuthService.logout();
     logout();
     navigate("/login");
+  };
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
   };
 
   // Функція для відображення навігації в залежності від ролі
@@ -24,12 +29,12 @@ function Navigation() {
       return (
         <ul className="navbar-nav ms-auto">
           <li className="nav-item">
-            <Link className="nav-link" to="/login">
+            <Link className="nav-link" to="/login" onClick={() => setIsMenuOpen(false)}>
               Увійти
             </Link>
           </li>
           <li className="nav-item">
-            <Link className="nav-link" to="/register">
+            <Link className="nav-link" to="/register" onClick={() => setIsMenuOpen(false)}>
               Зареєструватись
             </Link>
           </li>
@@ -41,20 +46,20 @@ function Navigation() {
     if (role === "admin") {
       // Навігація для адміністратора
       return (
-        <ul className="navbar-nav w-100 d-flex justify-content-between">
-          <div className="d-flex">
+        <ul className="navbar-nav w-100 d-flex flex-column flex-lg-row justify-content-between">
+          <div className="d-flex flex-column flex-lg-row">
             <li className="nav-item">
-              <Link className="nav-link" to="/usersPage">
+              <Link className="nav-link" to="/usersPage" onClick={() => setIsMenuOpen(false)}>
                 Користувачі
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/responsesPage">
+              <Link className="nav-link" to="/responsesPage" onClick={() => setIsMenuOpen(false)}>
                 Відповіді
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/requestsPage">
+              <Link className="nav-link" to="/requestsPage" onClick={() => setIsMenuOpen(false)}>
                 Запити
               </Link>
             </li>
@@ -63,7 +68,10 @@ function Navigation() {
             <li className="nav-item">
               <button
                 className="nav-link btn btn-link"
-                onClick={handleLogout}
+                onClick={() => {
+                  handleLogout();
+                  setIsMenuOpen(false);
+                }}
               >
                 <i className="bi bi-box-arrow-right"></i> Вийти
               </button>
@@ -74,15 +82,15 @@ function Navigation() {
     } else if (role === "support") {
       // Навігація для support
       return (
-        <ul className="navbar-nav w-100 d-flex justify-content-between">
-          <div className="d-flex">
+        <ul className="navbar-nav w-100 d-flex flex-column flex-lg-row justify-content-between">
+          <div className="d-flex flex-column flex-lg-row">
             <li className="nav-item">
-              <Link className="nav-link" to="/requestsPage">
+              <Link className="nav-link" to="/requestsPage" onClick={() => setIsMenuOpen(false)}>
                 Запити
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/responsesPage">
+              <Link className="nav-link" to="/responsesPage" onClick={() => setIsMenuOpen(false)}>
                 Відповіді
               </Link>
             </li>
@@ -91,7 +99,10 @@ function Navigation() {
             <li className="nav-item">
               <button
                 className="nav-link btn btn-link"
-                onClick={handleLogout}
+                onClick={() => {
+                  handleLogout();
+                  setIsMenuOpen(false);
+                }}
               >
                 <i className="bi bi-box-arrow-right"></i> Вийти
               </button>
@@ -100,17 +111,17 @@ function Navigation() {
         </ul>
       );
     } else {
-      // Звичайний користувач - тільки кнопка "Вийти"
+      // Звичайний користувач
       return (
-        <ul className="navbar-nav ms-auto">
-           <div className="d-flex">
-           <li className="nav-item">
-              <Link className="nav-link" to="/usersPage">
+        <ul className="navbar-nav w-100 d-flex flex-column flex-lg-row justify-content-between">
+          <div className="d-flex flex-column flex-lg-row">
+            <li className="nav-item">
+              <Link className="nav-link" to="/usersPage" onClick={() => setIsMenuOpen(false)}>
                 Користувачі
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/userDetail">
+              <Link className="nav-link" to="/userDetail" onClick={() => setIsMenuOpen(false)}>
                 Профіль
               </Link>
             </li>
@@ -119,7 +130,10 @@ function Navigation() {
             <li className="nav-item">
               <button
                 className="nav-link btn btn-link"
-                onClick={handleLogout}
+                onClick={() => {
+                  handleLogout();
+                  setIsMenuOpen(false);
+                }}
               >
                 <i className="bi bi-box-arrow-right"></i> Вийти
               </button>
@@ -140,17 +154,16 @@ function Navigation() {
         <button
           className="navbar-toggler"
           type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
+          onClick={toggleMenu}
           aria-controls="navbarNav"
-          aria-expanded="false"
+          aria-expanded={isMenuOpen}
           aria-label="Toggle navigation"
         >
           <span className="navbar-toggler-icon"></span>
         </button>
 
         <div
-          className="collapse navbar-collapse justify-content-between"
+          className={`collapse navbar-collapse justify-content-between ${isMenuOpen ? 'show' : ''}`}
           id="navbarNav"
         >
           {renderNavByRole()}
